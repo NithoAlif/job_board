@@ -31,9 +31,10 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", "~> 1.16.a"
-  spec.add_development_dependency "dotenv", "~> 2.2.1"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   
+  spec.add_runtime_dependency "dotenv", "~> 2.2.1"
+  spec.add_runtime_dependency "json", "~> 2.1.0"
   spec.add_runtime_dependency "mysql2", "~> 0.4.9"
 end

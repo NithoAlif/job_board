@@ -2,6 +2,8 @@ PATH
   remote: .
   specs:
     job_board (0.1.0)
+      dotenv (~> 2.2.1)
+      json (~> 2.1.0)
       mysql2 (~> 0.4.9)
 
 GEM
@@ -9,6 +11,7 @@ GEM
   specs:
     diff-lcs (1.3)
     dotenv (2.2.1)
+    json (2.1.0)
     mysql2 (0.4.9)
     rake (10.5.0)
     rspec (3.7.0)
@@ -30,7 +33,6 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.16.a)
-  dotenv (~> 2.2.1)
   job_board!
   rake (~> 10.0)
   rspec (~> 3.0)
