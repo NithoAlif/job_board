@@ -29,17 +29,20 @@ module JobBoard
         :database => @mysql_db
         )
     rescue
-      puts "Could not connect to database, please check the settings"
-      return 1
+      # puts "Could not connect to database, please check the settings"
+      return -1
     else
-      puts "Connection successful"
+      # puts "Connection successful"
       return 0
     end
   end
 
   def self.reset_configuration
     # Close database connection
-    @db.close
+    if !@db.nil?
+      @db.close      
+    end
+    @db = nil
 
     # Reset configuration value
     @mysql_host = nil
@@ -47,6 +50,8 @@ module JobBoard
     @mysql_user = nil
     @mysql_pass = nil
     @mysql_db = nil
+
+    return 0
   end
 
   def self.print_configuration
@@ -71,22 +76,11 @@ module JobBoard
         email
         )
     rescue
-      puts "Could not create new listing, please check the database connection"
-      return 1
+      # puts "Could not create new listing, please check the database connection"
+      return -1
     else
-      puts "Job succesfully listed"
-      return 0
-    end
-  end
-
-  def self.get_all
-    begin
-      result = @db.query("SELECT * FROM jobs")
-    rescue
-      puts "Could not get job listing, please check the database connection"
-      return 1
-    else
-      return result
+      # puts "Job succesfully listed"
+      return db.last_id
     end
   end
 
@@ -94,13 +88,16 @@ module JobBoard
     begin
       statement = @db.prepare("SELECT * FROM jobs WHERE id = ?")
       result = statement.execute(id)
-    rescue
-      puts "Could not get job listing, please check the database connection"
-      return 1
-    else
-      result.each do |row|
-        return row
+
+      if result.count == 0
+        # puts "Could not find job listing with id = ".concat(id.to_s)
+        return -2
       end
+    rescue
+      # puts "Could not get job listing, please check the database connection"
+      return -1
+    else
+      result.to_a.first
     end
   end
 
@@ -119,14 +116,14 @@ module JobBoard
         id)
 
       if statement.affected_rows != 1
-        puts "Could not find job listing with id = ".concat(id.to_s)
-        return 2
+        # puts "Could not find job listing with id = ".concat(id.to_s)
+        return -2
       end
     rescue 
-      puts "Could not update job listing, please check the database connection"
-      return 1
+      # puts "Could not update job listing, please check the database connection"
+      return -1
     else
-      puts "Job succesfully updated"
+      # puts "Job succesfully updated"
       return 0
     end
   end
@@ -137,15 +134,26 @@ module JobBoard
       result = statement.execute(id)
 
       if statement.affected_rows != 1
-        puts "Could not find job listing with id = ".concat(id.to_s)
-        return 2
+        # puts "Could not find job listing with id = ".concat(id.to_s)
+        return -2
       end
     rescue 
-      puts "Could not delete job listing, please check the database connection"
-      return 1
+      # puts "Could not delete job listing, please check the database connection"
+      return -1
     else
-      puts "Job succesfully deleted"
+      # puts "Job succesfully deleted"
       return 0
+    end
+  end
+
+  def self.get_all
+    begin
+      result = @db.query("SELECT * FROM jobs")
+    rescue
+      # puts "Could not get job listing, please check the database connection"
+      return -1
+    else
+      return result.to_a
     end
   end
 end
