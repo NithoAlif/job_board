@@ -20,7 +20,7 @@ module JobBoard
     end
 
 
-    def create(category:, position:, company:, post:, email:)
+    def create(category, position, company, post, email)
       statement = @db.prepare(
         "INSERT INTO jobs (category, position, company, post, email)
         VALUES (?, ?, ?, ?, ?)"
@@ -36,10 +36,12 @@ module JobBoard
       @company = company
       @post = post
       @email = email
+
+      return @id
     end
 
 
-    def fetch(id=@id)
+    def get(id=@id)
       @id = id
       if !id.nil?
         statement = @db.prepare("SELECT * FROM jobs WHERE id = ?")
@@ -47,6 +49,7 @@ module JobBoard
 
         if result.count == 0
           @logger.info "Could not find job listing with id = ".concat(id.to_s)
+          return -2          
         else
           data = result.to_a.first
           @category = data['category']
@@ -54,10 +57,13 @@ module JobBoard
           @company = data['company']
           @post = data['post']
           @email = data['email']
+
+          return 0
         end
       
       else
-        @logger.error "Id cannot be empty. Please create/fetch first"        
+        @logger.error "Id cannot be empty. Please create/fetch first"
+        return -1  
       end
     end
 
@@ -81,11 +87,10 @@ module JobBoard
           category, position, company,
           post, email, @id)
 
-          if statement.affected_rows != 1
-            @logger.info "Could not find job listing with id = ".concat(@id.to_s)
-          end
+        return 0
       else
         @logger.error "Id cannot be empty. Please create/fetch first"
+        return -1
       end
     end
 
@@ -97,6 +102,7 @@ module JobBoard
   
         if statement.affected_rows != 1
           @logger.info "Could not find job listing with id = ".concat(id.to_s)
+          return -2
         else
           @id = nil
           @category = ''
@@ -104,9 +110,12 @@ module JobBoard
           @company = ''
           @post = ''
           @email = ''
+
+          return 0
         end
       else
         @logger.error "Id cannot be empty. Please create/fetch first"
+        return -1
       end
     end
 
