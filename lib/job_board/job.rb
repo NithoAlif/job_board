@@ -120,6 +120,12 @@ module JobBoard
     end
 
 
+    def get_all
+      result = @db.query("SELECT * FROM jobs")
+      return result.to_a
+    end
+
+
     def print_var
       puts @id, @category, @position, @company, @post, @email
     end

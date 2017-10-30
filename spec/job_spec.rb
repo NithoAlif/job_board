@@ -93,7 +93,19 @@ RSpec.describe JobBoard::Job do
     it 'failed to be invoked due to empty id' do
       expect(JobBoard::Job.new.delete).to eq(-1)
     end
+  end
 
+  describe '.get_all' do
+    it 'succeed retrieving all job listing' do
+      all_data = @job.get_all
+      
+      expect(all_data).to be_an_instance_of(Array)
+      expect(all_data.last['category']).to eql(data_category)
+      expect(all_data.last['position']).to eql(data_position)
+      expect(all_data.last['company']).to eql(data_company)
+      expect(all_data.last['post']).to eql(data_post)
+      expect(all_data.last['email']).to eql(data_email)
+    end
   end
 
 end
