@@ -13,3 +13,4 @@
 # development files
 .env
 log/*.log
+coverage
